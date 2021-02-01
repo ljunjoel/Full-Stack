@@ -20,14 +20,27 @@ const App = () => {
   ]
 
   const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState(new Array(6+1).join('0').split('').map(parseFloat))
+  
   const handleRandomClick = () => {
     setSelected(Math.floor(Math.random() * 6))
   }
+  const handleVoteClick = () => {
+    const copy = {...votes}
+    copy[selected] += 1
+    setVotes(copy)
+  }
+
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       {anecdotes[selected]}
+      <p>This anecdote has {votes[selected]} votes</p>
+      <Button handleClick={handleVoteClick} text='Vote' />
       <Button handleClick={handleRandomClick} text='Random Anecdote' />
+      <h1>Most Voted Anecdote</h1>
+
     </div>
   )
 }
