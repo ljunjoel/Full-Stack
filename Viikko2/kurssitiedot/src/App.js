@@ -3,7 +3,7 @@ import React from 'react'
 const Header = (props) => {
   return (
     <div>
-      <h1>{props.name}</h1>
+      <h2>{props.name}</h2>
     </div>
   )
 }
@@ -92,6 +92,7 @@ const App = () => {
 
   return (
     <div>
+      <h1>Web development curriculum</h1>
       {courses.map((course) =>
       <Course key={course.id} name={course.name} parts={course.parts} />
       )}
