@@ -3,7 +3,7 @@ import React from 'react'
 const Header = (props) => {
   return (
     <div>
-      <h1>{props.course}</h1>
+      <h1>{props.name}</h1>
     </div>
   )
 }
@@ -35,15 +35,16 @@ const Total = ({parts}) => {
 const Course = (props) => {
   return(
     <div>
-      <Header course={props.course.name} />
-      <Content parts={props.course.parts}/>
-      <Total parts={props.course.parts} />
+      <Header name={props.name} />
+      <Content parts={props.parts}/>
+      <Total parts={props.parts} />
     </div>
   )
 }
 
 const App = () => {
-  const course = {
+  const courses = [
+  {
     name: 'Half Stack application development',
     id: 1,
     parts: [
@@ -68,13 +69,32 @@ const App = () => {
       id: 4
     }
   ]
-}  
+},
+{
+  name: 'Node.js',
+  id: 2,
+  parts: [
+    {
+      name: 'Routing',
+      exercises: 3,
+      id: 1
+    },
+    {
+      name: 'Middlewares',
+      exercises: 7,
+      id: 2
+    }
+  ]
+}
+]  
 
 
 
   return (
     <div>
-      <Course course={course} />
+      {courses.map((course) =>
+      <Course key={course.id} name={course.name} parts={course.parts} />
+      )}
     </div>
   )
 }
