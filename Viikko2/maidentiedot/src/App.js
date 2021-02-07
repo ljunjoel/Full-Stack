@@ -41,7 +41,9 @@ const App = () => {
           onChange={handleFilterChange} />
         </div>
         {countries.map(country =>
-          <p key={country.name}>{country.name}</p>)}
+          <p key={country.name}>{country.name} 
+          <button onClick={() => setCountries([country])}>show</button>
+          </p>)}
       </div>
     )
   }
@@ -65,6 +67,7 @@ const App = () => {
                 {language.name}
               </li>)}
           </ul>
+          <img src={countries[0].flag} width="200" />
         </div>
       </div>
     )
