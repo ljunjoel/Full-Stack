@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import personService from './services/persons'
-import { __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED } from 'react-dom'
+import './index.css'
 
 const Filter = (props) => {
   return (
@@ -59,12 +59,34 @@ const Persons = ({persons, setRemover}) => {
   )
 } 
 
+const Notification = ({ message, error }) => {
+  console.log(error, message)
+  if (message === null) {
+    return null
+  }
+  if(error) {
+    return( 
+      <div className="error">
+        {message}
+      </div>
+    )
+  }
+  return (
+    <div className="message">
+      {message}
+    </div>
+  )
+}
+
 
 const App = () => {
   const [ persons, setPersons] = useState([]) 
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ newFilter, setNewFilter] = useState('')
+  const [message, setMessage] = useState('')
+  const [error, setError] = useState(false)
+
   const names = persons.map(person => person.name)
 
   useEffect(() => {
@@ -95,6 +117,16 @@ const App = () => {
               setPersons(persons.map(p => p.id !== person.id ? p : returnedPerson))
               setNewName('')
               setNewNumber('')
+              setMessage(`${returnedPerson.name} was updated successfully`)
+            })
+            .catch(error => {
+              setError(true)
+              setMessage(`Information of ${personObject.name} has already been removed from server`)
+              setTimeout(() => {
+              setError(false);
+              setMessage('')
+            }, 5000);
+            setPersons(persons.filter(p => p.id !== person.id))
             })
         } else {
           setNewName('')
@@ -113,6 +145,7 @@ const App = () => {
           setPersons(persons.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
+          setMessage(`${returnedPerson.name} was added successfully`)
         })
     }
   }
@@ -123,6 +156,7 @@ const App = () => {
       personService
         .remove(id)
         setPersons(persons.filter(p=>p.id !== id))
+        setMessage(`${removed.name} was deleted successfully`)
     } else {
       setNewName('')
       setNewNumber('')
@@ -146,9 +180,16 @@ const App = () => {
     setNewFilter(event.target.value)
   }
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setMessage('')}, 5000);
+      return () => clearTimeout(timer);
+  }, [message])
+
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} error={error} />
       <Filter newFilter={newFilter} handleFilterChange={handleFilterChange} />
       <PersonForm addPerson={addPerson}
       newName={newName} handleNameChange = {handleNameChange}
