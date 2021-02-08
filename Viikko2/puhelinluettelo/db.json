@@ -1,11 +1,6 @@
 {
   "persons": [
     {
-      "name": "Arto Hellas",
-      "number": "040-123456",
-      "id": 1
-    },
-    {
       "name": "Ada Lovelace",
       "number": "39-44-5323523",
       "id": 2
@@ -24,6 +19,11 @@
       "name": "Grace Hopper",
       "number": "0965630",
       "id": 5
+    },
+    {
+      "name": "Matami Mimmi",
+      "number": "3459350",
+      "id": 6
     }
   ]
 }

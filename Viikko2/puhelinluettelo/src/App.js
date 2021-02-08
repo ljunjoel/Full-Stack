@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import personService from './services/persons'
+import { __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED } from 'react-dom'
 
 const Filter = (props) => {
   return (
@@ -33,21 +35,29 @@ const PersonForm = (props) => {
 
 const Person = (props) => {
   return (
-    <p>{props.name} {props.number}</p>
+    <p>
+      {props.name} {props.number} 
+      <button onClick={()=>props.setRemover(props.id)}>
+      Delete
+      </button>
+    </p>
   )
 }
 
-/*const Persons = (props) => {
+const Persons = ({persons, setRemover}) => {
   return (
     <>
-      {props.map(props.person =>
-      <Person key={props.person.name} 
-      name = {props.person.name}
-      number = {props.person.number} />
+      {persons.map(person =>
+      <Person key={person.name} 
+      name = {person.name}
+      number = {person.number}
+      id = {person.id}
+      setRemover={setRemover}
+      />
       )}
     </>
   )
-} */
+} 
 
 
 const App = () => {
@@ -55,14 +65,13 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ newFilter, setNewFilter] = useState('')
-  const [ showAll, setShowAll ] = useState(true)
   const names = persons.map(person => person.name)
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
+    personService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
       })
   }, [])
 
@@ -77,13 +86,25 @@ const App = () => {
       name: newName,
       number: newNumber
       }
-      axios
-        .post('http://localhost:3001/persons', personObject)
-        .then(response => {
-          setPersons(persons.concat(response.data))
+      personService
+        .create(personObject)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
         })
+    }
+  }
+
+  const removePerson = (id) => {
+    const removed = persons.find(p => p.id === id)
+    if(window.confirm(`Delete ${removed.name}?`)) {
+      personService
+        .remove(id)
+        setPersons(persons.filter(p=>p.id !== id))
+    } else {
+      setNewName('')
+      setNewNumber('')
     }
   }
   
@@ -112,12 +133,10 @@ const App = () => {
       newName={newName} handleNameChange = {handleNameChange}
       newNumber={newNumber} handleNumberChange = {handleNumberChange} />
       <h2>Numbers</h2>
-        {filteredPersons.map(person =>
-        <Person key={person.name} name={person.name} number={person.number} />
-        )}
+        <Persons  persons = {persons} setRemover={removePerson} />
     </div>
   )
-
+  
 }
 
 export default App
