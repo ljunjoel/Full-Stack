@@ -17,10 +17,15 @@ const reducer = ( state = initialState, action ) => {
   }
 }
 
-export const createNotification = (content) => {
-    return {
-        type: 'NEW_NOTIFICATION',
-        data: content
+export const createNotification = (content, delay) => {
+    return async dispatch => {
+        dispatch({
+            type: 'NEW_NOTIFICATION',
+            data: content
+        },
+        setTimeout(() => {
+            dispatch(removeNotification())
+        }, delay * 1000))
     }
 }
 
