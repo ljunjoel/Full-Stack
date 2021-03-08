@@ -17,15 +17,22 @@ const reducer = ( state = initialState, action ) => {
   }
 }
 
+let timeoutId = undefined
+
 export const createNotification = (content, delay) => {
+    console.log('This is ID prior to running: ', timeoutId)
     return async dispatch => {
         dispatch({
             type: 'NEW_NOTIFICATION',
             data: content
         },
-        setTimeout(() => {
+        console.log('This is ID prior to clearing: ', timeoutId),
+        clearTimeout(timeoutId),
+        console.log('This is ID post-clear: ', timeoutId),
+        timeoutId = setTimeout(() => {
             dispatch(removeNotification())
-        }, delay * 1000))
+        }, delay * 1000),
+        console.log('This is the new ID: ', timeoutId))
     }
 }
 

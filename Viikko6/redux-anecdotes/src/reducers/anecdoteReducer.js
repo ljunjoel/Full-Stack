@@ -35,12 +35,9 @@ export const createAnecdote = (content) => {
 }
 
 export const voteFor = (id) => {
-  console.log('This is the id: ', id)
   return async dispatch => {
     const anecdotes = await anecdoteService.getAll()
-    console.log('this is anecdotes: ', anecdotes)
     const anecdoteToLike = anecdotes.find(a => a.id === id)
-    console.log(anecdoteToLike)
     const changedAnecdote = { ...anecdoteToLike, votes: anecdoteToLike.votes +1}
     const updatedAnecdote = await anecdoteService.update(id, changedAnecdote)
     dispatch({
