@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useField } from './hooks/index'
 import {
   Switch,
   Route,
@@ -23,16 +24,12 @@ const Menu = () => {
 
 const Anecdote = ({ anecdotes }) => {
   const id = useParams().id
-  console.log('This is anecdotes: ', anecdotes)
-  console.log('This is id: ', id)
-  console.log('This is Number(id): ', Number(id))
   const anecdote = anecdotes.find(a => a.id === id)
-  console.log('This is anecdote: ', anecdote)
   return (
     <div>
-      <h2>{anecdote.content}</h2>
-      <div>{anecdote.user}</div>
+      <h2>{anecdote.content} by {anecdote.author}</h2>
       <div><strong>has {anecdote.votes} votes</strong></div>
+      <div>for more info see <a href={anecdote.info}>{anecdote.info}</a></div>
     </div>
   )
 }
@@ -73,14 +70,26 @@ const Footer = () => (
 )
 
 const CreateNew = (props) => {
-  const [content, setContent] = useState('')
+ /* const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
+  const [info, setInfo] = useState('') */
+  const contents = useField('text')
+  const authors = useField('text')
+  const infos = useField('text')
   const history = useHistory()
 
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    const content = contents.value
+    const author = authors.value
+    const info = infos.value
+    console.log('This is contents: ', contents)
+    console.log('This is authors: ', authors)
+    console.log('This is infos: ', infos)
+    console.log('This is content: ', content)
+    console.log('This is author: ', author)
+    console.log('This is info: ', info)
     props.addNew({
       content,
       author,
@@ -96,15 +105,15 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
+          <input  {...contents}/>
         </div>
         <div>
           author
-          <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
+          <input {...authors} />
         </div>
         <div>
           url for more info
-          <input name='info' value={info} onChange={(e)=> setInfo(e.target.value)} />
+          <input {...infos} />
         </div>
         <button>create</button>
       </form>
@@ -146,7 +155,7 @@ const App = () => {
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
     setAnecdotes(anecdotes.concat(anecdote))
-    setNotification(`A new anecdote ${anecdote.content} was created!`)
+    setNotification(`A new anecdote ${anecdote.contents} was created!`)
     setTimeout(() => {
       setNotification('')
     }, 10000)
