@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { cloneElement, useState } from 'react'
 import { useField } from './hooks/index'
 import {
   Switch,
@@ -70,12 +70,13 @@ const Footer = () => (
 )
 
 const CreateNew = (props) => {
- /* const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('') */
+ // const { reset, ...other } = useField('text')
   const contents = useField('text')
+  const { reset: reset1, ...contentsOther } = contents
   const authors = useField('text')
+  const { reset: reset2, ...authorsOther } = authors
   const infos = useField('text')
+  const { reset: reset3, ...infosOther } = infos
   const history = useHistory()
 
 
@@ -99,23 +100,31 @@ const CreateNew = (props) => {
     history.push('/')
   }
 
+  const handleReset = (e) => {
+    e.preventDefault()
+    contents.reset()
+    authors.reset()
+    infos.reset()
+  }
+
   return (
     <div>
       <h2>create a new anecdote</h2>
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input  {...contents}/>
+          <input  {...contentsOther}/>
         </div>
         <div>
           author
-          <input {...authors} />
+          <input {...authorsOther} />
         </div>
         <div>
           url for more info
-          <input {...infos} />
+          <input {...infosOther} />
         </div>
         <button>create</button>
+        <button onClick={handleReset}>reset</button>
       </form>
     </div>
   )
@@ -155,7 +164,7 @@ const App = () => {
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
     setAnecdotes(anecdotes.concat(anecdote))
-    setNotification(`A new anecdote ${anecdote.contents} was created!`)
+    setNotification(`A new anecdote ${anecdote.content} was created!`)
     setTimeout(() => {
       setNotification('')
     }, 10000)
